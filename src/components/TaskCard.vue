@@ -2,11 +2,10 @@
     <div class="task-card card shadow-sm">
         <!-- 图片（仅当存在且加载成功时显示） -->
         <img
-        v-if="task.image && imageVisible"
+        v-if="task.image"
         :src="getImageUrl(task.image)"
         alt="Task Image"
         class="card-img-top"
-        @error="imageVisible = false"
         />
   
       <div class="card-body d-flex flex-column justify-content-between">
@@ -39,7 +38,7 @@
 
   function getImageUrl(relativePath) {
     if (!relativePath) return '';
-    return new URL(`/src/assets/${relativePath}`, import.meta.url).href;
+        return new URL(`${relativePath}`, import.meta.url).href;
     }
 
 

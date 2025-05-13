@@ -24,7 +24,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'todo',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 2,
@@ -33,7 +33,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'inprogress',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 3,
@@ -42,7 +42,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'completed',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 4,
@@ -51,7 +51,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'todo',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 5,
@@ -60,7 +60,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'todo',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 6,
@@ -69,7 +69,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'todo',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 7,
@@ -78,7 +78,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'todo',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 8,
@@ -87,7 +87,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'todo',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 9,
@@ -96,7 +96,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'inprogress',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 10,
@@ -105,7 +105,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'inprogress',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 11,
@@ -114,7 +114,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'inprogress',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 12,
@@ -123,7 +123,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'inprogress',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 13,
@@ -132,7 +132,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'completed',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 14,
@@ -141,7 +141,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'completed',
-      image: 'picture.png'
+      image: '/img/picture.png'
     },
     {
       id: 15,
@@ -150,7 +150,7 @@
       content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
       create: ' 01 Jan 2024',
       status: 'completed',
-      image: 'picture.png'
+      image: '/img/picture.png'
     }
   ]);
   
