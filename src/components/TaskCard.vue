@@ -124,6 +124,11 @@ function cancelEdit() {
   min-height: 300px;
 }
 
+.card-body {
+  padding: 1rem;
+  min-height: 120px; /* 防止内容过短 */
+}
+
 .card-img-top {
   max-height: 160px;
   object-fit: cover;
@@ -147,18 +152,19 @@ function cancelEdit() {
 }
 
 .btn-primary {
-  background-color: #3e8acb;
-  border-color: #3e8acb;
+  background-color: #2c6aa3;  /* 遵从Comply with web accessibility 颜色对比度需要大于4.5：1，设置为为#2c6aa3 */
+  border-color: #2c6aa3;
 }
 
 .btn-success {
-  background-color: #28a745;
-  border-color: #28a745;
+  background-color: #218838;  /* 遵从Comply with web accessibility 颜色对比度需要大于4.6：1，设置为为#218838 */
+  border-color: #218838;
 }
 
 .btn-warning {
-  background-color: #ffc107;
-  border-color: #ffc107;
+  background-color: #e0a800;  /* 遵从Comply with web accessibility 颜色对比度需要大于4.5：1，设置为为#e0a800 */
+  border-color: #e0a800;
+  color: #000000;             /* 强制黑色文字 */
 }
 
 .edit-form {

@@ -45,6 +45,11 @@ const isEven = computed(() => {
   min-height: 250px;
 }
 
+.card-body {
+  padding: 1rem;
+  min-height: 120px; /* 防止内容过短 */
+}
+
 .card.flex-row-reverse {
   flex-direction: row-reverse; /* 宽屏下奇数行反转 */
 }

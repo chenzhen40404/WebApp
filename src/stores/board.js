@@ -1,53 +1,94 @@
 import { defineStore } from 'pinia';
-import { ref, watch } from 'vue';
 
-export const useBoardStore = defineStore('board', () => {
-  const tasks = ref([]);
-  const companies = ref([]);
-
-  function setTasks(data) {
-    tasks.value = data;
+export const useBoardStore = defineStore('board', {
+  state: () => ({
+    tasks: JSON.parse(localStorage.getItem('tasks')) || [],
+    companies: JSON.parse(localStorage.getItem('companies')) || [],
+    error: null,
+    isLoading: false
+  }),
+  getters: {
+    taskCounts: (state) => ({
+      todo: state.tasks.filter(t => t.status === 'todo').length,
+      inprogress: state.tasks.filter(t => t.status === 'inprogress').length,
+      completed: state.tasks.filter(t => t.status === 'completed').length
+    })
+  },
+  actions: {
+    async loadData() {
+      this.isLoading = true;
+      try {
+        const [tasksRes, companiesRes] = await Promise.all([
+          fetch('http://localhost:3001/tasks'),
+          fetch('http://localhost:3001/companies')
+        ]);
+        if (!tasksRes.ok) throw new Error(`任务数据加载失败: ${tasksRes.status}`);
+        if (!companiesRes.ok) throw new Error(`公司数据加载失败: ${companiesRes.status}`);
+        const tasksData = await tasksRes.json();
+        const companiesData = await companiesRes.json();
+        if (!Array.isArray(tasksData)) throw new Error('任务数据格式无效');
+        if (!Array.isArray(companiesData)) throw new Error('公司数据格式无效');
+        this.tasks = tasksData;
+        this.companies = companiesData;
+        this.error = null;
+        localStorage.setItem('tasks', JSON.stringify(this.tasks));
+        localStorage.setItem('companies', JSON.stringify(this.companies));
+        console.log('Tasks loaded:', this.tasks);
+      } catch (err) {
+        this.error = err.message;
+        this.tasks = [];
+        this.companies = [];
+        console.error('数据加载错误:', err);
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async addTask(task) {
+      try {
+        const response = await fetch('http://localhost:3001/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(task)
+        });
+        if (!response.ok) throw new Error('添加任务失败');
+        const newTask = await response.json();
+        this.tasks.push(newTask);
+        localStorage.setItem('tasks', JSON.stringify(this.tasks));
+      } catch (err) {
+        console.error('添加任务错误:', err);
+        this.error = err.message;
+      }
+    },
+    async updateTask(updatedTask) {
+      try {
+        const response = await fetch(`http://localhost:3001/tasks/${updatedTask.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedTask)
+        });
+        if (!response.ok) throw new Error('更新任务失败');
+        const index = this.tasks.findIndex(t => t.id === updatedTask.id);
+        if (index !== -1) {
+          this.tasks[index] = updatedTask;
+          localStorage.setItem('tasks', JSON.stringify(this.tasks));
+        }
+      } catch (err) {
+        console.error('更新任务错误:', err);
+        this.error = err.message;
+      }
+    },
+    async removeTask(id) {
+      try {
+        const response = await fetch(`http://localhost:3001/tasks/${id}`, {
+          method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('删除任务失败');
+        this.tasks = this.tasks.filter(t => t.id !== id);
+        localStorage.setItem('tasks', JSON.stringify(this.tasks));
+      } catch (err) {
+        console.error('删除任务错误:', err);
+        this.error = err.message;
+      }
+    }
   }
-
-  function setCompanies(data) {
-    companies.value = data;
-  }
-
-  function addTask(task) {
-    tasks.value.push(task);
-  }
-
-  function updateTask(id, updated) {
-    const index = tasks.value.findIndex(t => t.id === id);
-    if (index !== -1) tasks.value[index] = { ...tasks.value[index], ...updated };
-  }
-
-  function deleteTask(id) {
-    tasks.value = tasks.value.filter(t => t.id !== id);
-  }
-
-  // 持久化状态（localStorage）
-  watch([tasks, companies], ([t, c]) => {
-    localStorage.setItem('tasks', JSON.stringify(t));
-    localStorage.setItem('companies', JSON.stringify(c));
-  }, { deep: true });
-
-  // 加载持久化数据
-  function loadFromLocalStorage() {
-    const savedTasks = localStorage.getItem('tasks');
-    const savedCompanies = localStorage.getItem('companies');
-    if (savedTasks) tasks.value = JSON.parse(savedTasks);
-    if (savedCompanies) companies.value = JSON.parse(savedCompanies);
-  }
-
-  return {
-    tasks,
-    companies,
-    setTasks,
-    setCompanies,
-    addTask,
-    updateTask,
-    deleteTask,
-    loadFromLocalStorage
-  };
 });

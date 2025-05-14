@@ -1,47 +1,47 @@
 <template>
-  <div class="nav-container bg-dark text-white d-flex align-items-center justify-content-between px-4">
-    <!-- 左侧 LOGO -->
-    <div class="fw-bold">Stark</div>
+  <!-- 移除默认的 navbar-light bg-light，改用自定义容器 -->
+  <nav class="nav-container bg-dark text-white">
+    <div class="container d-flex align-items-center justify-content-between px-4">
+      <!-- 左侧 LOGO -->
+      <a class="fw-bold text-white text-decoration-none" href="#">Kanban</a>
 
-    <!-- 中间标签导航容器：限制最大宽度 50% 且居中 -->
-    <div class="nav-tabs-wrapper">
-        <div class="nav-tabs-container">
-            <div
+      <!-- 中间导航标签 -->
+      <div class="nav-tabs-wrapper">
+        <ul class="nav-tabs-container navbar-nav">
+          <li 
             v-for="tab in tabs"
             :key="tab.key"
-            class="nav-tab"
+            class="nav-item position-relative"
             :class="{ active: activeTab === tab.key }"
-            @click="selectTab(tab.key)"
-            >
-            <span class="tab-label">{{ tab.label }}</span>
-            <span
-                v-if="counts[tab.key] > 0"
-                class="badge-pill bg-danger text-white"
-            >
-                {{ counts[tab.key] }} 
-            </span>
+            @click="setTab(tab.key)"
+          >
+            <div class="nav-link">
+              <span class="tab-label">{{ tab.label }}</span>
+              <span 
+                v-if="taskCounts[tab.key] > 0"
+                class="badge-pill bg-danger"
+                :aria-label="`${tab.label} 任务数量: ${taskCounts[tab.key] || 0}`"
+              >
+                {{ taskCounts[tab.key] || 0 }}
+              </span>
             </div>
-        </div>
-    </div>
+          </li>
+        </ul>
+      </div>
 
-
-    <!-- 右侧用户信息 -->
-    <div class="user-info d-flex align-items-center gap-3 ms-auto">
-      <span class="fw-semibold">Tony Stark</span>
-      <a href="#" class="text-white text-decoration-underline" @click.prevent="logout">Log Out</a>
+      <!-- 右侧用户信息 -->
+      <div class="user-info d-flex align-items-center gap-3 ms-auto">
+        <span class="fw-semibold">Tony Stark</span>
+        <a href="#" class="text-white text-decoration-underline" @click.prevent="logout">Log Out</a>
+      </div>
     </div>
-  </div>
+  </nav>
 </template>
 
 <script setup>
-const emit = defineEmits(['tab-changed']);
-
-const { activeTab, counts } = defineProps({
-  activeTab: {
-    type: String,
-    required: true
-  },
-  counts: {
+const props = defineProps({
+  activeTab: String,
+  taskCounts: {
     type: Object,
     default: () => ({ todo: 0, inprogress: 0, completed: 0 })
   }
@@ -53,20 +53,21 @@ const tabs = [
   { key: 'completed', label: 'Completed' }
 ];
 
-function selectTab(key) {
-  emit('tab-changed', key);
-}
-
-function logout() {
-  alert('Logged out.');
-}
+/* 事件传递逻辑保持不变 */
+const emit = defineEmits(['update:activeTab']);
+const setTab = (tab) => emit('update:activeTab', tab);
 </script>
 
 <style scoped>
+/* 容器样式 */
+.nav-container {
+  height: 60px;
+  background-color: var(--bs-dark);
+}
+
+/* 导航标签容器 */
 .nav-tabs-wrapper {
-  flex: 0 0 50%;          /* 仅占总宽度的 50% */
-  display: flex;
-  justify-content: flex-start;
+  flex: 0 0 50%;
   margin-left: 1rem;
 }
 
@@ -74,39 +75,28 @@ function logout() {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0;
-  width: 100%;
 }
 
-.nav-tab {
-  position: relative; /* 关键：让徽章绝对定位相对于它 */
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 1rem;
-  color: white;
+/* 导航项交互样式 */
+.nav-item {
   cursor: pointer;
+  padding: 0.5rem 1rem;
   transition: background-color 0.2s;
 }
 
-.nav-tab.active {
+.nav-item.active {
   background-color: #444;
   font-weight: 600;
 }
 
-.tab-label {
-  flex-grow: 1; /* 占据左侧空间 */
-}
-
+/* 徽章定位 */
 .badge-pill {
   position: absolute;
   right: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  display: inline-block;
   padding: 0.2rem 0.55rem;
   font-size: 0.75rem;
-  font-weight: 500;
-  background-color: #dc3545;
   border-radius: 999px;
 }
-
 </style>
