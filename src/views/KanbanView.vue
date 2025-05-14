@@ -11,8 +11,32 @@
         v-for="task in filteredTasks"
         :key="task.id"
       >
-        <TaskCard :task="task" @start="startTask" @completed="completeTask" @back="backTask" @remove="removeTask" />
+        <TaskCard :task="task" @start="startTask" @completed="completeTask" @back="backTask" @remove="removeTask" @update:task="updateTask" />
       </div>
+      <div v-if="activeTab === 'todo'" class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center mb-4">
+            <div class="card p-3 w-100 shadow-sm">
+                <button class="btn btn-outline-primary w-100" @click="toggleForm" v-if="!showForm">+ 添加任务</button>
+
+                <form v-if="showForm" @submit.prevent="addNewTask">
+                <div class="mb-2">
+                    <input v-model="newTask.title" type="text" class="form-control" placeholder="标题" required />
+                </div>
+                <div class="mb-2">
+                    <input v-model="newTask.description" type="text" class="form-control" placeholder="描述" required/>
+                </div>
+                <div class="mb-2">
+                    <textarea v-model="newTask.content" class="form-control" placeholder="内容" rows="3" required></textarea>
+                </div>
+                <div class="mb-2">
+                    <input v-model="newTask.image" type="text" class="form-control" placeholder="图片路径 (如 /img/picture.png)"  required/>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-sm btn-primary">提交</button>
+                    <button type="button" class="btn btn-sm btn-secondary" @click="toggleForm">取消</button>
+                </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- 公司区域 -->
@@ -22,11 +46,11 @@
         <p>暂无公司</p>
       </div>
       <div
-        class="col-12 col-sm-12 col-md-6 col-lg-4 d-flex justify-content-center mb-4"
-        v-for="company in companies"
+        class="col-12 mb-4"
+        v-for="(company, index) in companies"
         :key="company.id"
       >
-        <CompanyCard :company="company" />
+        <CompanyCard :company="company" :index="index" />
       </div>
     </div>
   </div>
@@ -178,16 +202,23 @@ const tasks = ref([
 const companies = ref([
   {
     id: 1,
-    title: 'Company Title 1',
-    description: 'Company description',
-    content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
+    title: 'News Title 1',
+    description: 'Some default text to fill some space, and something more so there is more text.',
+    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
     img: '/img/new.png'
   },
   {
     id: 2,
-    title: 'Company Title 2',
+    title: 'News Title 2',
     description: 'Company description',
-    content: 'Cras justo odio, dapibus ac facilisis in, egestaseget quam. Donec id elit non mi porta gravida at eget metus.Nullam id dolor id nibh ultri ...',
+    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+    img: '/img/new.png'
+  },
+  {
+    id: 3,
+    title: 'News Title 3',
+    description: 'Company description',
+    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
     img: '/img/new.png'
   }
 ]);
@@ -211,6 +242,46 @@ const taskTitle = computed(() => {
       return 'All Tasks';
   }
 });
+
+const showForm = ref(false);
+const newTask = ref({
+  title: '',
+  description: '',
+  content: '',
+  image: ''
+});
+
+function toggleForm() {
+  showForm.value = !showForm.value;
+}
+
+function addNewTask() {
+  if (!newTask.value.title.trim()) return;
+
+  // 自动计算 id（从当前 tasks 中找最大 id + 1）
+  const maxId = Math.max(...tasks.value.map(t => t.id), 0);
+  const task = {
+    id: maxId + 1,
+    title: newTask.value.title.trim(),
+    description: newTask.value.description.trim(),
+    content: newTask.value.content.trim(),
+    create: new Intl.DateTimeFormat('en-GB', {
+      year: '2-digit',
+      month: 'short',
+      day: 'numeric'
+    }).format(new Date()),
+    status: 'todo',
+    image: newTask.value.image.trim()
+  };
+
+  tasks.value.push(task);
+
+  // 重置表单并关闭
+  newTask.value = { title: '', description: '', content: '', image: '' };
+  showForm.value = false;
+
+  updateTaskCounts();
+}
 
 function startTask(task) {
   console.log('Start:', task.title);
@@ -242,6 +313,14 @@ function updateTaskCounts() {
     completed: tasks.value.filter((t) => t.status === 'completed').length
   };
   emit('remove', { type: 'all', counts });
+}
+
+function updateTask(updatedTask) {
+  const index = tasks.value.findIndex((t) => t.id === updatedTask.id);
+  if (index !== -1) {
+    tasks.value[index] = { ...updatedTask };
+    updateTaskCounts();
+  }
 }
 
 watch(
