@@ -6,7 +6,7 @@
           v-for="task in filteredTasks"
           :key="task.id"
         >
-          <TaskCard :task="task" @start="startTask" @remove="removeTask" />
+          <TaskCard :task="task" @start="startTask" @completed="completeTask" @back="backTask" @remove="removeTask" />
         </div>
         <div>
             <CompanyCard />
@@ -16,7 +16,7 @@
   </template>
   
   <script setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, watch } from 'vue';
   import TaskCard from '../components/TaskCard.vue';
   import CompanyCard from '../components/CompanyCard.vue'
   
@@ -164,16 +164,49 @@
     tasks.value.filter((t) => t.status === activeTab || !activeTab)
     );
 
-  function startTask(task) {
-    console.log('Start:', task.title);
-  }
-  
-  function removeTask(id) {
-    tasks.value = tasks.value.filter((t) => t.id !== id);
-    const remainingTasksCount = tasks.value.filter(
-    (t) => t.status === activeTab
-  ).length;
-    emit('remove', { type: activeTab, num: remainingTasksCount});
-  }
+function startTask(task) {
+  console.log('Start:', task.title);
+  task.status = 'inprogress';
+  updateTaskCounts();
+}
+
+function completeTask(task) {
+  console.log('Completed:', task.title);
+  task.status = 'completed';
+  updateTaskCounts();
+}
+
+function backTask(task) {
+  console.log('Back:', task.title);
+  task.status = 'inprogress';
+  updateTaskCounts();
+}
+
+function removeTask(id) {
+  tasks.value = tasks.value.filter((t) => t.id !== id);
+  updateTaskCounts();
+}
+
+function updateTaskCounts() {
+  const counts = {
+    todo: tasks.value.filter((t) => t.status === 'todo').length,
+    inprogress: tasks.value.filter((t) => t.status === 'inprogress').length,
+    completed: tasks.value.filter((t) => t.status === 'completed').length
+  };
+  emit('remove', { type: 'all', counts });
+}
+
+watch(
+  () => activeTab,
+  () => {
+    const counts = {
+      todo: tasks.value.filter((t) => t.status === 'todo').length,
+      inprogress: tasks.value.filter((t) => t.status === 'inprogress').length,
+      completed: tasks.value.filter((t) => t.status === 'completed').length
+    };
+    emit('remove', { type: 'all', counts });
+  },
+  { immediate: true }
+);
   </script>
   

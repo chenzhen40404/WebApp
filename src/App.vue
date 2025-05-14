@@ -14,18 +14,22 @@ import KanbanView from './views/KanbanView.vue';
 
 const currentTab = ref('todo'); // 默认值必须有效
 const taskCounts = ref({
-    todo: 6,
-    inprogress: 5,
-    completed: 4
+    todo: 0,
+    inprogress: 0,
+    completed: 0
 });
 
 const remove = (e) => {
-  if (e.type === 'todo') {
-    taskCounts.value.todo = e.num;
-  } else if (e.type === 'inprogress') {
-    taskCounts.value.inprogress = e.num;
-  } else if (e.type === 'completed') {
-    taskCounts.value.completed = e.num;
+  if (e.type === 'all' && e.counts) {
+    taskCounts.value.todo = e.counts.todo;
+    taskCounts.value.inprogress = e.counts.inprogress;
+    taskCounts.value.completed = e.counts.completed;
+  } else if (e.type && e.num !== undefined) {
+    if (['todo', 'inprogress', 'completed'].includes(e.type)) {
+      taskCounts.value[e.type] = e.num;
+    }
+  } else {
+    console.warn('Invalid event data:', e);
   }
   console.log('remove', e);
 };
