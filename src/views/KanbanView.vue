@@ -8,6 +8,9 @@
         >
           <TaskCard :task="task" @start="startTask" @remove="removeTask" />
         </div>
+        <div>
+            <CompanyCard />
+        </div>
       </div>
     </div>
   </template>
@@ -15,6 +18,7 @@
   <script setup>
   import { ref, computed } from 'vue';
   import TaskCard from '../components/TaskCard.vue';
+  import CompanyCard from '../components/CompanyCard.vue'
   
   const tasks = ref([
     {
@@ -154,10 +158,10 @@
     }
   ]);
   
-  const props = defineProps({ activeTab: String });
-  
+  const { activeTab } = defineProps({ activeTab: String });
+  const emit = defineEmits(['start', 'remove']);
   const filteredTasks = computed(() =>
-    tasks.value.filter((t) => t.status === props.activeTab || !props.activeTab)
+    tasks.value.filter((t) => t.status === activeTab || !activeTab)
     );
 
   function startTask(task) {
@@ -166,6 +170,10 @@
   
   function removeTask(id) {
     tasks.value = tasks.value.filter((t) => t.id !== id);
+    const remainingTasksCount = tasks.value.filter(
+    (t) => t.status === activeTab
+  ).length;
+    emit('remove', { type: activeTab, num: remainingTasksCount});
   }
   </script>
   
